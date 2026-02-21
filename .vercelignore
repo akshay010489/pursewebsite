@@ -1,0 +1,3 @@
+# Netlify config - not used on Vercel
+netlify.toml
+NETLIFY_DEPLOY.md
