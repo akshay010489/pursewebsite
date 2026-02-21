@@ -16,6 +16,10 @@ export interface User {
 }
 
 export function signUp(email: string, password: string, name: string): { success: boolean; error?: string } {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+    return { success: false, error: 'Not available on server' }
+  }
+
   const users = getUsers()
   
   // Check if user already exists
@@ -41,6 +45,10 @@ export function signUp(email: string, password: string, name: string): { success
 }
 
 export function login(email: string, password: string): { success: boolean; error?: string; user?: User } {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+    return { success: false, error: 'Not available on server' }
+  }
+
   const users = getUsers()
   const user = users.find(u => u.email === email && u.password === password)
 
@@ -56,13 +64,16 @@ export function login(email: string, password: string): { success: boolean; erro
 }
 
 export function logout(): void {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return
   localStorage.removeItem('currentUser')
 }
 
 export function getCurrentUser(): User | null {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return null
+
   const userStr = localStorage.getItem('currentUser')
   if (!userStr) return null
-  
+
   try {
     return JSON.parse(userStr)
   } catch {
@@ -71,10 +82,13 @@ export function getCurrentUser(): User | null {
 }
 
 export function isAuthenticated(): boolean {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return false
   return getCurrentUser() !== null
 }
 
 export function updateUserAddress(address: User['address']): boolean {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return false
+
   const user = getCurrentUser()
   if (!user) return false
 
@@ -94,6 +108,8 @@ export function updateUserAddress(address: User['address']): boolean {
 }
 
 function getUsers(): User[] {
+  if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') return []
+
   const usersStr = localStorage.getItem('users')
   if (!usersStr) return []
   
